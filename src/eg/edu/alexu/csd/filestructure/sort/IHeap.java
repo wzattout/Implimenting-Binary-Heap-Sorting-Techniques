@@ -12,7 +12,7 @@ public interface IHeap<T extends Comparable<T>> extends Cloneable{
     int size();
     /**
      * Runs in O(lg n) time, is the key to maintaining the max-heap property.
-     * @param heap the reference to the tree to be heapified
+     * @param node the reference to the tree to be heapified
      */
     void heapify(INode<T> node);
     /**
