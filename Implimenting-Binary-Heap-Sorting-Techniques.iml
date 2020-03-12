@@ -16,5 +16,7 @@
         <SOURCES />
       </library>
     </orderEntry>
+    <orderEntry type="library" name="HeapAndSortTester" level="application" />
+    <orderEntry type="library" name="hamcrest-core-1.311" level="application" />
   </component>
 </module>
