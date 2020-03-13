@@ -6,8 +6,10 @@ import java.util.Iterator;
 
 public class Heap<T extends Comparable<T>> implements IHeap<T> {
     private ArrayList<INode<T>> heapArray;
+    private int size;
     public Heap(){
-        heapArray=new ArrayList<INode<T>>();
+        size=0;
+        heapArray=new ArrayList<>(1000);
         heapArray.add(null);
     }
     @Override
@@ -19,7 +21,7 @@ public class Heap<T extends Comparable<T>> implements IHeap<T> {
 
     @Override
     public int size() {
-        return heapArray.size()-1;
+        return size;
     }
 
     @Override
@@ -58,7 +60,7 @@ public class Heap<T extends Comparable<T>> implements IHeap<T> {
             return null;
         T value=root.getValue();
         this.swapValue(root,heapArray.get(this.size()));
-        heapArray.remove(this.size());
+        this.size--;
         if(this.size()!=0)
             heapify(root);
         return value;
@@ -68,10 +70,15 @@ public class Heap<T extends Comparable<T>> implements IHeap<T> {
     public void insert(T element) {
         if(element == null)
             return;
-        INode<T> child = new Node<T>(element,this.size()+1,heapArray);
-        heapArray.add(child);
+        this.size++;
+        if(this.size >= heapArray.size())
+            heapArray.add(new Node<T>(element,this.size()));
+        else
+            heapArray.get(this.size()).setValue(element);
+
+        INode<T> child = heapArray.get(this.size());
         INode<T> parent=child.getParent();
-        while (parent != null && child.getValue().compareTo(parent.getValue()) > 0){
+        while ( parent != null && child.getValue().compareTo(parent.getValue()) > 0 ){
             swapValue(child,parent);
             child=parent;
             parent=child.getParent();
@@ -80,15 +87,13 @@ public class Heap<T extends Comparable<T>> implements IHeap<T> {
 
     @Override
     public void build(Collection<T> unordered) {
-        heapArray=new ArrayList<INode<T>>();
-        heapArray.add(null);
+
         if(unordered == null)
             return;
         Iterator<T> iterator = unordered.iterator();
-        int index=1;
         while (iterator.hasNext()) {
-            heapArray.add(new Node<T>(iterator.next(),index,heapArray)) ;
-            index++;
+            size++;
+            heapArray.add(new Node<T>(iterator.next(),size)) ;
         }
 
         for(int i=this.size() ; i>0 ; i--)
@@ -100,4 +105,46 @@ public class Heap<T extends Comparable<T>> implements IHeap<T> {
         node1.setValue(node2.getValue());
         node2.setValue(template);
     }
+    public class Node<T extends Comparable<T>> implements INode<T> {
+        private int index;
+        private T value;
+        public Node(T value,int index ){
+            this.value=value;
+            this.index=index;
+        }
+        @Override
+        public INode<T> getLeftChild() {
+            int leftChildIndex=2*this.index;
+            if(leftChildIndex  >  size)
+                return null;
+            return (INode<T>) heapArray.get(leftChildIndex);
+        }
+
+        @Override
+        public INode<T> getRightChild() {
+            int RightChildIndex=2*this.index+1;
+            if(RightChildIndex  >  size )
+                return null;
+            return (INode<T>) heapArray.get(RightChildIndex);
+        }
+
+        @Override
+        public INode<T> getParent() {
+            int parentIndex = this.index/2 ;
+            if(parentIndex  < 1)
+                return null;
+            return (INode<T>) heapArray.get(parentIndex);
+        }
+
+        @Override
+        public T getValue() {
+            return this.value;
+        }
+
+        @Override
+        public void setValue(T value) {
+            this.value=value;
+        }
+    }
+
 }
