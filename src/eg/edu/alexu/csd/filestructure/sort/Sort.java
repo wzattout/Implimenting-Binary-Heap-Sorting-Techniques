@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Random;
 
-public class ISortImpl<T extends Comparable<T>> implements ISort<T> {
+public class Sort<T extends Comparable<T>> implements ISort<T> {
 
     private void quickSort(ArrayList<T> arr, int left, int right, int n){
         if (left >= right)
@@ -40,7 +40,13 @@ public class ISortImpl<T extends Comparable<T>> implements ISort<T> {
 
     @Override
     public IHeap<T> heapSort(ArrayList<T> unordered) {
-        return null;
+        Heap<T> heap=new Heap<>();
+        heap.build(unordered);
+        if(unordered==null)
+            return heap;
+        for(int i=0 ; i<unordered.size()-1 ; i++ )
+            heap.extract();
+        return heap;
     }
 
     @Override

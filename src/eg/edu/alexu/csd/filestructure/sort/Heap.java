@@ -26,19 +26,19 @@ public class Heap<T extends Comparable<T>> implements IHeap<T> {
 
     @Override
     public void heapify(INode<T> node) {
-        if(node == null)
+        if(! isInHeap(node) )
             return;
         INode<T> largest;
         INode<T> leftChild=node.getLeftChild();
         INode<T> rightChild=node.getRightChild();
-        if(rightChild != null){
+        if( isInHeap(rightChild) ){
 
             if(leftChild.getValue().compareTo(rightChild.getValue()) > 0)
                 largest = leftChild;
             else
                 largest = rightChild;
 
-        } else if(leftChild != null){
+        } else if(isInHeap(leftChild)){
 
             largest=leftChild;
 
@@ -56,7 +56,7 @@ public class Heap<T extends Comparable<T>> implements IHeap<T> {
     @Override
     public T extract() {
         INode<T> root=this.getRoot();
-        if(root == null)
+        if( !isInHeap(root) )
             return null;
         T value=root.getValue();
         this.swapValue(root,heapArray.get(this.size()));
@@ -78,7 +78,7 @@ public class Heap<T extends Comparable<T>> implements IHeap<T> {
 
         INode<T> child = heapArray.get(this.size());
         INode<T> parent=child.getParent();
-        while ( parent != null && child.getValue().compareTo(parent.getValue()) > 0 ){
+        while ( isInHeap(parent)  && child.getValue().compareTo(parent.getValue()) > 0 ){
             swapValue(child,parent);
             child=parent;
             parent=child.getParent();
@@ -105,6 +105,15 @@ public class Heap<T extends Comparable<T>> implements IHeap<T> {
         node1.setValue(node2.getValue());
         node2.setValue(template);
     }
+
+    private boolean isInHeap(INode<T> node){
+        if(node == null)
+            return false;
+        if(((Node)node).getIndex() > size)
+            return false;
+        return true;
+    }
+
     public class Node<T extends Comparable<T>> implements INode<T> {
         private int index;
         private T value;
@@ -115,7 +124,7 @@ public class Heap<T extends Comparable<T>> implements IHeap<T> {
         @Override
         public INode<T> getLeftChild() {
             int leftChildIndex=2*this.index;
-            if(leftChildIndex  >  size)
+            if(leftChildIndex  >=  heapArray.size())
                 return null;
             return (INode<T>) heapArray.get(leftChildIndex);
         }
@@ -123,7 +132,7 @@ public class Heap<T extends Comparable<T>> implements IHeap<T> {
         @Override
         public INode<T> getRightChild() {
             int RightChildIndex=2*this.index+1;
-            if(RightChildIndex  >  size )
+            if(RightChildIndex  >=  heapArray.size() )
                 return null;
             return (INode<T>) heapArray.get(RightChildIndex);
         }
@@ -144,6 +153,10 @@ public class Heap<T extends Comparable<T>> implements IHeap<T> {
         @Override
         public void setValue(T value) {
             this.value=value;
+        }
+
+        public int getIndex() {
+            return index;
         }
     }
 
