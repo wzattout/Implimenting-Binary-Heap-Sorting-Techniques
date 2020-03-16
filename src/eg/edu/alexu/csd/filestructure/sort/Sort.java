@@ -10,7 +10,8 @@ public class Sort<T extends Comparable<T>> implements ISort<T> {
         if (left >= right)
             return;
         Random rand = new Random();
-        int randomIndex = rand.nextInt((right - left) + 1) + left, newLeft = left + 1, small = left + 1, newRight;
+        int randomIndex = rand.nextInt((right - left) + 1) + left,
+                newLeft = left + 1, small = left + 1, newRight;
         Collections.swap(arr, left, randomIndex);
         for (int i = left + 1; i < n + left; ++i) {
             if (arr.get(i).compareTo(arr.get(left)) < 0){
